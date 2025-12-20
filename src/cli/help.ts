@@ -12,6 +12,7 @@ export function printHelp(): void {
     '',
     `${bold('Usage')}`,
     `  kkp <port> [port ...]   ${dim('kill by port')}`,
+    `  kkp <name> [name ...]   ${dim('kill by process name')}`,
     `  kkp                     ${dim('interactive TUI')}`,
     `  kkp --list              ${dim('list listeners')}`,
     '',
@@ -29,6 +30,7 @@ export function printHelp(): void {
     `${bold('Examples')}`,
     `  kkp 3000           ${dim('kill process on port 3000')}`,
     `  kkp 3000 5173      ${dim('kill multiple ports')}`,
+    `  kkp node           ${dim('kill all listeners by node')}`,
     `  kkp 3000/tcp       ${dim('TCP only')}`,
     `  kkp --list --json  ${dim('JSON output')}`,
   ]

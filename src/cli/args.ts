@@ -7,6 +7,11 @@ export interface PortRequest {
   protocols?: Protocol[]
 }
 
+export interface ProcessNameRequest {
+  raw: string
+  name: string
+}
+
 export interface CLIFlags {
   help: boolean
   version: boolean
@@ -23,6 +28,7 @@ export interface CLIFlags {
 export interface ParsedArgs {
   flags: CLIFlags
   ports: PortRequest[]
+  processNames: ProcessNameRequest[]
   unknown: string[]
 }
 
@@ -52,6 +58,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
   }
 
   const ports: PortRequest[] = []
+  const processNames: ProcessNameRequest[] = []
   const unknown: string[] = []
 
   const args = [...argv]
@@ -189,10 +196,23 @@ export function parseArgs(argv: string[]): ParsedArgs {
       continue
     }
 
-    // Positional: port or port/proto
+    // Positional: port, port/proto, or process name
     const pr = parsePortRequest(a)
-    if (pr) ports.push(pr)
-    else unknown.push(a)
+    if (pr) {
+      ports.push(pr)
+      i++
+      continue
+    }
+
+    // Check if it's a process name (contains letters, optionally ends with .exe)
+    const pn = parseProcessName(a)
+    if (pn) {
+      processNames.push(pn)
+      i++
+      continue
+    }
+
+    unknown.push(a)
     i++
   }
 
@@ -209,10 +229,10 @@ export function parseArgs(argv: string[]): ParsedArgs {
 
   // If --pid is present, ports are ignored (but not treated as unknown).
   if (typeof flags.pid === 'number') {
-    return { flags, ports: [], unknown }
+    return { flags, ports: [], processNames: [], unknown }
   }
 
-  return { flags, ports, unknown }
+  return { flags, ports, processNames, unknown }
 }
 
 function parsePortRequest(raw: string): PortRequest | null {
@@ -232,4 +252,15 @@ function parsePortRequest(raw: string): PortRequest | null {
   }
 
   return { raw, port }
+}
+
+
+function parseProcessName(raw: string): ProcessNameRequest | null {
+  // Must contain at least one letter, can end with .exe
+  // Examples: node, node.exe, chrome, python3
+  if (!/^[a-zA-Z][a-zA-Z0-9._-]*$/.test(raw)) return null
+  // Exclude things that look like flags or paths
+  if (raw.startsWith('-') || raw.includes('/') || raw.includes('\\')) return null
+  
+  return { raw, name: raw }
 }

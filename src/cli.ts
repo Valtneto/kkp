@@ -1,6 +1,6 @@
 import pc from 'picocolors'
 
-import { parseArgs, resolveProtocols } from './cli/args'
+import { parseArgs, resolveProtocols, type ProcessNameRequest } from './cli/args'
 import { printHelp } from './cli/help'
 import { getFinder } from './core/finder'
 import { getKiller } from './core/killer'
@@ -20,7 +20,7 @@ import {
 } from './ui/renderer'
 
 async function main(): Promise<void> {
-  const { flags, ports, unknown } = parseArgs(process.argv.slice(2))
+  const { flags, ports, processNames, unknown } = parseArgs(process.argv.slice(2))
 
   if (flags.help) {
     printHelp()
@@ -42,7 +42,7 @@ async function main(): Promise<void> {
   const allowedProtocols = resolveProtocols(flags)
 
   // `kkp` (no args) => interactive TUI
-  if (!flags.list && flags.pid == null && ports.length === 0) {
+  if (!flags.list && flags.pid == null && ports.length === 0 && processNames.length === 0) {
     if (!process.stdin.isTTY || !process.stdout.isTTY) {
       process.stderr.write(lineErr('Interactive mode requires a TTY.') + '\n')
       process.stderr.write(lineInfo(`Try ${pc.bold('kkp --list')} or ${pc.bold('kkp <port>')}.`) + '\n')
@@ -127,9 +127,18 @@ async function main(): Promise<void> {
     return
   }
 
-  // `kkp 3000 [5173 ...]`
+  // `kkp 3000 [5173 ...]` or `kkp node [chrome ...]`
   const finder = await getFinder()
-  await killByPorts(finder, ports, allowedProtocols, flags.force, flags.dryRun, flags.timeoutMs)
+  
+  // Handle process names first
+  if (processNames.length > 0) {
+    await killByProcessNames(finder, processNames, allowedProtocols, flags.force, flags.dryRun, flags.timeoutMs)
+  }
+  
+  // Handle ports
+  if (ports.length > 0) {
+    await killByPorts(finder, ports, allowedProtocols, flags.force, flags.dryRun, flags.timeoutMs)
+  }
 }
 
 function renderTable(listeners: Listener[]): void {
@@ -154,6 +163,47 @@ function renderTable(listeners: Listener[]): void {
   const udpCount = listeners.filter((l) => l.protocol === 'udp').length
   const summary = pc.dim(`\n${listeners.length} listeners (${tcpCount} tcp, ${udpCount} udp)`)
   process.stdout.write(summary + '\n')
+}
+
+async function killByProcessNames(
+  finder: Awaited<ReturnType<typeof getFinder>>,
+  targets: ProcessNameRequest[],
+  allowedProtocols: Protocol[],
+  force: boolean,
+  dryRun: boolean,
+  timeoutMs: number,
+): Promise<void> {
+  const allListeners = await withSpinner('Scanning listeners', () => finder.listAll())
+  
+  const matched: Listener[] = []
+  
+  for (const t of targets) {
+    const name = t.name.toLowerCase().replace(/\.exe$/i, '')
+    
+    const found = allListeners.filter((l) => {
+      if (!l.processName) return false
+      const pname = l.processName.toLowerCase().replace(/\.exe$/i, '')
+      return pname === name || pname.includes(name)
+    })
+    
+    if (found.length === 0) {
+      process.stderr.write(lineErr(`${sym.err} ${pc.bold(t.raw)} ${pc.dim('no matching process found')}`) + '\n')
+      process.exitCode = 1
+    } else {
+      matched.push(...found)
+    }
+  }
+  
+  if (matched.length === 0) {
+    if (process.exitCode == null) process.exitCode = 1
+    return
+  }
+  
+  // Filter by protocol and dedupe
+  const filtered = matched.filter((l) => allowedProtocols.includes(l.protocol))
+  const unique = uniqBy(filtered, (l) => String(l.pid))
+  
+  await killResolvedListeners(unique, allowedProtocols, force, dryRun, timeoutMs)
 }
 
 async function killByPorts(

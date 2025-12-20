@@ -1,0 +1,49 @@
+{
+  "name": "kkp",
+  "version": "1.0.0",
+  "description": "Fast cross-platform CLI to find and kill processes by port",
+  "type": "module",
+  "license": "MIT",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shuakami/kkp.git"
+  },
+  "homepage": "https://github.com/shuakami/kkp#readme",
+  "bugs": {
+    "url": "https://github.com/shuakami/kkp/issues"
+  },
+  "bin": {
+    "kkp": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "prepublishOnly": "npm run build && npm run typecheck"
+  },
+  "dependencies": {
+    "picocolors": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "keywords": [
+    "cli",
+    "port",
+    "kill",
+    "process",
+    "netstat",
+    "lsof",
+    "developer-tools",
+    "devtools"
+  ]
+}

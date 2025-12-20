@@ -15,6 +15,7 @@ npm i -g @sdjz/kkp
 ```bash
 kkp 3000              # kill port 3000
 kkp 3000 5173         # kill multiple
+kkp node              # kill all listeners by process name
 kkp --list            # list all listeners
 kkp                   # interactive TUI
 ```

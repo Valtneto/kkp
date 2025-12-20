@@ -1,5 +1,5 @@
 {
-  "name": "kkp",
+  "name": "@sdjz/kkp",
   "version": "1.0.0",
   "description": "Fast cross-platform CLI to find and kill processes by port",
   "type": "module",

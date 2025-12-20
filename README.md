@@ -7,7 +7,7 @@ Kill processes by port. Fast.
 ## Install
 
 ```bash
-npm i -g kkp
+npm i -g @sdjz/kkp
 ```
 
 ## Usage

@@ -59,14 +59,29 @@ body:
     id: debug-info
     attributes:
       label: "🔍 Debug info / 调试信息"
-      description: "This helps a lot! / 这对排查很有帮助！"
-      placeholder: |
-        Paste the output of these commands / 粘贴以下命令的输出：
+      description: |
+        Please run the commands for your OS and paste the output / 请运行对应系统的命令并粘贴输出
+      value: |
+        <!-- 
+        Run these commands and paste output below / 运行以下命令并粘贴输出：
         
+        ALL SYSTEMS / 所有系统:
         kkp --list
-        netstat -ano | findstr <port>  (Windows)
-        lsof -i :<port>                (macOS/Linux)
-      render: shell
+        
+        WINDOWS:
+        netstat -ano | findstr <port>
+        
+        macOS:
+        lsof -i :<port>
+        
+        Linux:
+        ss -tlnp | grep <port>
+        -->
+        
+        ```
+        (paste output here / 粘贴输出到这里)
+        ```
+      render: markdown
 
   - type: textarea
     id: extra

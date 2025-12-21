@@ -1,0 +1,48 @@
+name: "💡 Feature Request / 功能建议"
+description: "Got an idea to make kkp better? We're all ears! / 有让 kkp 更好的想法？我们洗耳恭听！"
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🚀 Let's build something cool! / 一起来搞点酷的！
+        
+        We love hearing new ideas. No idea is too small or too wild!
+        
+        我们喜欢听新想法。没有太小或太疯狂的点子！
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "😤 What's the problem? / 遇到什么问题？"
+      description: "Is your feature request related to a problem? / 你的建议是为了解决某个问题吗？"
+      placeholder: |
+        I'm always frustrated when...
+        我总是很烦恼当...
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "💭 Your idea / 你的想法"
+      description: "Describe what you'd like to see / 描述你想要的功能"
+      placeholder: |
+        It would be awesome if kkp could...
+        如果 kkp 能够...那就太棒了
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "🔄 Alternatives you've considered / 你考虑过的替代方案"
+      description: "Any other solutions or features you've thought about? / 有没有想过其他解决方案？"
+
+  - type: dropdown
+    id: importance
+    attributes:
+      label: "⭐ How important is this to you? / 这对你有多重要？"
+      options:
+        - "Nice to have / 有了更好"
+        - "Would use it often / 会经常用"
+        - "Can't live without it / 没它不行"

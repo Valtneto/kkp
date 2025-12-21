@@ -7,7 +7,14 @@ Kill processes by port. Fast.
 ## Install
 
 ```bash
+# npm
 npm i -g @sdjz/kkp
+
+# pnpm
+pnpm add -g @sdjz/kkp
+
+# bun
+bun add -g @sdjz/kkp
 ```
 
 ## Usage

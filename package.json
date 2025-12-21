@@ -1,6 +1,6 @@
 {
   "name": "@sdjz/kkp",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Fast cross-platform CLI to find and kill processes by port",
   "type": "module",
   "license": "MIT",

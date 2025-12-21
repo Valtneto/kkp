@@ -292,7 +292,10 @@ async function killResolvedListeners(
 
     if (r.errorCode === 'EPERM') {
       await hintElevationForListener(l)
-      if (!force) process.stderr.write(lineInfo(`Re-run with ${pc.bold('--force')} to override protected checks.`) + '\n')
+      // Only suggest --force if this was blocked by kkp's protection, not OS permission
+      if (!force && r.message === 'protected') {
+        process.stderr.write(lineInfo(`Re-run with ${pc.bold('--force')} to override protected checks.`) + '\n')
+      }
     }
 
     process.exitCode = 1

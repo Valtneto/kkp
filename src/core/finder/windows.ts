@@ -4,10 +4,20 @@ import { uniqBy } from '../../utils/strings'
 
 export class WindowsFinder {
   async listAll(): Promise<Listener[]> {
-    const tcp = await this.runNetstat(['-ano', '-p', 'tcp'])
-    const udp = await this.runNetstat(['-ano', '-p', 'udp'])
+    // Query both IPv4 and IPv6 protocols
+    const [tcp, tcp6, udp, udp6] = await Promise.all([
+      this.runNetstat(['-ano', '-p', 'tcp']),
+      this.runNetstat(['-ano', '-p', 'tcpv6']),
+      this.runNetstat(['-ano', '-p', 'udp']),
+      this.runNetstat(['-ano', '-p', 'udpv6']),
+    ])
 
-    const parsed = [...parseNetstat(tcp, 'tcp'), ...parseNetstat(udp, 'udp')]
+    const parsed = [
+      ...parseNetstat(tcp, 'tcp'),
+      ...parseNetstat(tcp6, 'tcp'),
+      ...parseNetstat(udp, 'udp'),
+      ...parseNetstat(udp6, 'udp'),
+    ]
     const listeners = uniqBy(parsed, (l) => `${l.protocol}:${l.port}:${l.pid}:${l.localAddress ?? ''}`)
 
     // Enrich (best-effort): process name, command line, user.
@@ -21,13 +31,23 @@ export class WindowsFinder {
     const out: Listener[] = []
 
     if (options.protocols.includes('tcp')) {
-      const tcp = await this.runNetstat(['-ano', '-p', 'tcp'])
+      // Query both IPv4 and IPv6
+      const [tcp, tcp6] = await Promise.all([
+        this.runNetstat(['-ano', '-p', 'tcp']),
+        this.runNetstat(['-ano', '-p', 'tcpv6']),
+      ])
       out.push(...parseNetstat(tcp, 'tcp').filter((l) => l.port === port))
+      out.push(...parseNetstat(tcp6, 'tcp').filter((l) => l.port === port))
     }
 
     if (options.protocols.includes('udp')) {
-      const udp = await this.runNetstat(['-ano', '-p', 'udp'])
+      // Query both IPv4 and IPv6
+      const [udp, udp6] = await Promise.all([
+        this.runNetstat(['-ano', '-p', 'udp']),
+        this.runNetstat(['-ano', '-p', 'udpv6']),
+      ])
       out.push(...parseNetstat(udp, 'udp').filter((l) => l.port === port))
+      out.push(...parseNetstat(udp6, 'udp').filter((l) => l.port === port))
     }
 
     return uniqBy(out, (l) => `${l.protocol}:${l.port}:${l.pid}:${l.localAddress ?? ''}`)

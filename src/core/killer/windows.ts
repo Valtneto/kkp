@@ -47,14 +47,16 @@ async function runTaskkill(args: string[]): Promise<KillResult> {
     // Exit code 0 means success
     if (res.code === 0) return { pid: parsePid(args), ok: true, method: 'taskkill' }
     
-    // Clean up garbled Chinese characters in error message
-    const cleanMsg = out.replace(/[\u0000-\u001F]|[^\x00-\x7F]/g, '').trim() || 'failed'
-    return { pid: parsePid(args), ok: false, method: 'taskkill', message: cleanMsg }
+    // For non-zero exit, provide a clean error message
+    // Exit code 1 or 128 usually means access denied
+    if (res.code === 1 || res.code === 128) {
+      return { pid: parsePid(args), ok: false, method: 'taskkill', message: 'access denied', errorCode: 'EPERM' }
+    }
+    
+    return { pid: parsePid(args), ok: false, method: 'taskkill', message: `exit code ${res.code}`, errorCode: 'EPERM' }
   } catch (err: any) {
-    const msg = err?.message ? String(err.message) : String(err)
-    const cleanMsg = msg.replace(/[\u0000-\u001F]|[^\x00-\x7F]/g, '').trim() || 'failed'
     const code = err?.code ? String(err.code) : undefined
-    return { pid: parsePid(args), ok: false, method: 'taskkill', message: cleanMsg, errorCode: code }
+    return { pid: parsePid(args), ok: false, method: 'taskkill', message: 'failed', errorCode: code }
   }
 }
 

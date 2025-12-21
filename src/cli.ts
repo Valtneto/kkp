@@ -177,6 +177,9 @@ async function killByProcessNames(
   
   const matched: Listener[] = []
   
+  // Check if we have any process names at all (Windows permission issue detection)
+  const listenersWithoutNames = allListeners.filter((l) => !l.processName).length
+  
   for (const t of targets) {
     const name = t.name.toLowerCase().replace(/\.exe$/i, '')
     
@@ -188,6 +191,21 @@ async function killByProcessNames(
     
     if (found.length === 0) {
       process.stderr.write(lineErr(`${sym.err} ${pc.bold(t.raw)} ${pc.dim('no matching process found')}`) + '\n')
+      
+      // On Windows, hint about elevation if we couldn't get process names
+      if (process.platform === 'win32' && listenersWithoutNames > 0) {
+        const isAdmin = await isWindowsAdmin()
+        if (!isAdmin) {
+          const hiddenCount = listenersWithoutNames
+          process.stderr.write(
+            lineInfo(
+              `${hiddenCount} listener${hiddenCount > 1 ? 's' : ''} found but process name unavailable. ` +
+              `Try running as Administrator, or use ${pc.bold('kkp <port>')} instead.`
+            ) + '\n'
+          )
+        }
+      }
+      
       process.exitCode = 1
     } else {
       matched.push(...found)
@@ -277,20 +295,34 @@ async function killResolvedListeners(
     perPid.set(l.pid, { ok: r.ok, method: r.method, message: r.message, errorCode: r.errorCode })
   }
 
+  // Group by PID to avoid duplicate output for IPv4/IPv6
+  const pidToListeners = new Map<number, Listener[]>()
   for (const l of actionable) {
-    const r = perPid.get(l.pid)
+    const arr = pidToListeners.get(l.pid) ?? []
+    arr.push(l)
+    pidToListeners.set(l.pid, arr)
+  }
+
+  const hintedPids = new Set<number>()
+
+  for (const [pid, listeners] of pidToListeners) {
+    const r = perPid.get(pid)
     if (!r) continue
+
+    const l = listeners[0]!
+    const addrCount = listeners.length > 1 ? pc.dim(` (${listeners.length} addresses)`) : ''
 
     if (r.ok) {
       const method = r.method ? pc.dim(r.method) : ''
-      process.stdout.write(lineOk(`${sym.ok} ${formatKillLine(l)} ${method}`.trimEnd()) + '\n')
+      process.stdout.write(lineOk(`${sym.ok} ${formatKillLine(l)}${addrCount} ${method}`.trimEnd()) + '\n')
       continue
     }
 
     const reason = r.message ? pc.dim(r.message) : pc.dim('failed')
-    process.stderr.write(lineErr(`${sym.err} ${formatKillLine(l)} ${reason}`) + '\n')
+    process.stderr.write(lineErr(`${sym.err} ${formatKillLine(l)}${addrCount} ${reason}`) + '\n')
 
-    if (r.errorCode === 'EPERM') {
+    if (r.errorCode === 'EPERM' && !hintedPids.has(pid)) {
+      hintedPids.add(pid)
       await hintElevationForListener(l)
       // Only suggest --force if this was blocked by kkp's protection, not OS permission
       if (!force && r.message === 'protected') {

@@ -1,8 +1,0 @@
-blank_issues_enabled: false
-contact_links:
-  - name: "❓ Question / 提问"
-    url: https://github.com/shuakami/kkp/discussions
-    about: "Got a question? Start a discussion! / 有问题？开个讨论！"
-  - name: "📖 Documentation / 文档"
-    url: https://github.com/shuakami/kkp#readme
-    about: "Check out the README first / 先看看 README"

